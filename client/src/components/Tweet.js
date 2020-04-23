@@ -11,9 +11,10 @@ import Heart from './Heart'
 import { IconRetweet, IconMessage, IconShare } from '../assets/icons'
 
 const Tweet = (tweet) => {
-    const {id, timestamp, status, media, retweetFrom, author, isLiked, isRetweeted, numLikes, numRetweets} = tweet.data;
+    const [toggle, setToggle] = React.useState(false)
+    
+    let {id, timestamp, status, media, retweetFrom, author, isLiked, isRetweeted, numLikes, numRetweets} = tweet.data;
     let history = useHistory();
-    console.log(isLiked)
     
     const userClick = (ev) => {
         history.push(`/${author.handle}`)
@@ -31,8 +32,12 @@ const Tweet = (tweet) => {
     const clickHeart = ev => {
         if (isLiked) {
             isLiked = false;
+            numLikes -= 1;
+            setToggle(false)
         } else {
             isLiked = true;
+            numLikes += 1;
+            setToggle(true)
         }
         ev.stopPropagation()
     }
@@ -57,7 +62,7 @@ const Tweet = (tweet) => {
             </TweetBody>
             <TweetFooter>
                 <div><FooterButton><IconMessage/></FooterButton></div>
-                <div style={{display:'flex'}}>{numLikes > 0 ? {numLikes} : null}<FooterButton onClick={ev=>clickHeart}><Heart isLiked={isLiked}/></FooterButton></div>
+                <div style={{display:'flex'}}>{numLikes > 0 ? {numLikes} : null}<FooterButton onClick={ev=>clickHeart(ev)}><Heart toggle={toggle}/></FooterButton></div>
                 <div style={{display:'flex'}}>{numRetweets > 0 ? <div>{numRetweets}</div> : null}<FooterButton><IconRetweet /></FooterButton></div>
                 <div><FooterButton><IconShare/></FooterButton></div>
             </TweetFooter>

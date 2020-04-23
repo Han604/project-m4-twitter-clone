@@ -3,6 +3,7 @@ import Logo from '../Logo'
 import Tweet from '../Tweet'
 import styled from 'styled-components'
 import {CurrentUserContext} from '../CurrentUserContext'
+import WordCounter from './WordCounter'
 // import { set } from 'date-fns';
 
 function Homefeed() {
@@ -10,6 +11,7 @@ function Homefeed() {
     const [error, setError] = React.useState(false)
     const [isLoaded, setIsLoaded] = React.useState(false)
     const [inputValue, setInputValue] = React.useState('')
+    const [wordCount, setWordCount] = React.useState(280)
     const {
         state: {
             currentUser
@@ -17,7 +19,8 @@ function Homefeed() {
     } = React.useContext(CurrentUserContext);
     const handleChange = ev => {
         setInputValue(ev.currentTarget.value);
-        console.log(inputValue)
+        setWordCount(280 - ev.currentTarget.value.length)
+        console.log(wordCount)
     }
     const renderFeed = () => {
         fetch('/API/me/home-feed')
@@ -62,7 +65,10 @@ function Homefeed() {
                             })
                         }}>
                             <StyledInput id='tweetInput' type='text' value={inputValue} placeholder='Write something' onChange={ev => handleChange(ev)}></StyledInput>
-                            <PostButton type='submit' onSubmit={()=>console.log('hi')}>Meow</PostButton>
+                            <div style={{display:'flex', marginLeft:'auto'}}>
+                                <WordCounter wordCount={wordCount}/>
+                                {wordCount >= 0 ?<PostButton type='submit' onSubmit={()=>console.log('hi')}>Meow</PostButton> : <PostButton type='button' disabled>Meow</PostButton>}
+                            </div>
                         </StyledForm>
                     </InputDiv>
                 <TweetWrapper>
